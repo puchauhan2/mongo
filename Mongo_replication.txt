@@ -1,0 +1,90 @@
+
+
+https://www.linode.com/docs/databases/mongodb/create-a-mongodb-replica-set/
+
+
+
+/var/lib/mongo 
+
+default port 27017
+
+mongod --port "PORT" --dbpath "YOUR_DB_DATA_PATH" --replSet "REPLICA_SET_INSTANCE_NAME"
+
+mongod --port 27018 --dbpath "/var/lib/mongo" --replSet rs0
+
+
+__________________________________________________________________________________
+
+setting relication path  on different port on same host 
+
+/home/puneet/mongodb
+
+mongod --port 27018 --dbpath "/home/puneet/mongodb" --replSet rs0   // doest not make sense for HA and DR  ,rs0  is just name
+
+
+ trying on on multiple host 
+
+
+make chnages on all server or node in /etc/mongod.conf
+
+replication:
+  replSetName: rs0   // this should be same for all member 
+
+
+rs.initiate()
+
+rs.add(localhost:27018)       //// adding member 
+rs.add("10.50.0.101:27017")
+rs.add("10.50.0.190")
+
+rs.conf()
+
+rs.status()
+
+/// testing 
+
+use exampleDB
+for (var i = 0; i <= 10; i++) db.exampleCollection.insert( { x : i } )
+
+
+db.getMongo().setSlaveOk()
+
+rs.slaveOk()  // make slave to read its databases otherwive slave thorws error;
+
+use exampleDB
+
+db.exampleCollection.find()
+
+
+
+________________ Command reference ______________________
+
+
+rs0:PRIMARY> rs.help();
+        rs.status()                                { replSetGetStatus : 1 } checks repl set status
+        rs.initiate()                              { replSetInitiate : null } initiates set with default settings
+        rs.initiate(cfg)                           { replSetInitiate : cfg } initiates set with configuration cfg
+        rs.conf()                                  get the current configuration object from local.system.replset
+        rs.reconfig(cfg)                           updates the configuration of a running replica set with cfg (disconnects)
+        rs.add(hostportstr)                        add a new member to the set with default attributes (disconnects)
+        rs.add(membercfgobj)                       add a new member to the set with extra attributes (disconnects)
+        rs.addArb(hostportstr)                     add a new member which is arbiterOnly:true (disconnects)
+        rs.stepDown([stepdownSecs, catchUpSecs])   step down as primary (disconnects)
+        rs.syncFrom(hostportstr)                   make a secondary sync from the given member
+        rs.freeze(secs)                            make a node ineligible to become primary for the time specified
+        rs.remove(hostportstr)                     remove a host from the replica set (disconnects)
+        rs.slaveOk()                               allow queries on secondary nodes
+
+        rs.printReplicationInfo()                  check oplog size and time range
+        rs.printSlaveReplicationInfo()             check replica set members and replication lag
+        db.isMaster()                              check who is primary
+
+        reconfiguration helpers disconnect from the database so the shell will display
+
+
+
+
+
+
+
+

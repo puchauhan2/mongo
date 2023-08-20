@@ -1,0 +1,136 @@
+to create database # use mydb
+to show dbs	   # show dbs
+To delete 	   # db.dropDatabase()
+
+log file : /var/log/mongodb/mongod.log
+default db path : /var/lib/mongo
+
+to show traffic on selected port : netstat -peant | grep ":27017"
+
+User management goto below 
+
+https://scalegrid.io/blog/getting-started-with-user-management-in-mongodb/
+
+user creation : db.createUser({'user':'appuser', 'pwd':'', roles:['readWrite']});
+
+# db.createUser({'user':'Puneet', 'pwd':'india', roles:['readWrite']});
+
+*Adding a User to Multiple Databases
+
+# db.createUser({user:'analyticsuser', pwd:'<pass>', roles:[{'role':'read', 'db':'applicationdb'}, { 'role':'readWrite', 'db':'analyticsdb'}]});
+
+*To Check
+
+# mongo -u 'analyticsuser' -p <pass> <servername>/applicationdb 
+# mongo -u 'Puneet' -p india 10.50.0.92/mydb1 
+# mongo -u 'root' -p india 10.50.0.92/admin
+
+___________________________________________________________
+
+remove mongodb
+
+sudo yum erase $(rpm -qa | grep mongodb-org)
+
+sudo rm -r /var/log/mongodb
+sudo rm -r /var/lib/mongo
+
+---------------------------------------------------------
+Enable Auth
+
+To create all global access account like root 
+
+use admin
+
+db.createUser(
+  {
+    user: "myUserAdmin",
+    pwd: "abc123",
+    roles: [ { role: "userAdminAnyDatabase", db: "admin" }, "readWriteAnyDatabase" ]
+  }
+)
+
+
+########## sample 
+
+select database admin # use admin
+
+db.createUser(
+  {
+    user: "root",
+    pwd: "india",
+    roles: [ { role: "userAdminAnyDatabase", db: "admin" }, "readWriteAnyDatabase" ]
+  }
+)
+
+
+##################### 
+to enable after setting root or admin run # mongod --auth
+
+mongod --auth --port 27017 --dbpath /var/lib/mongo  //  stop mongo server first
+
+mongo --port 27017 -u "root" -p "india" --authenticationDatabase "admin"
+
+use admin
+
+db.auth("root","india") in ad admin
+
+goto config file and enable security as below :
+
+# sudo vim /etc/mongod.conf
+security:
+ authorization: enabled   ******* write as it is ,consider space before "authorization: enabled"
+
+##########################################
+
+Database backup 
+
+backup
+
+sudo mongodump --db newdb --out /var/backups/mongobackups/`date +"%m-%d-%y"`
+
+restore 
+
+sudo mongorestore --db newdb --drop /var/backups/mongobackups/01-20-16/newdb/
+
+sudo mongorestore --db mydb1 --drop /nginxs/2018-11-16.tar.gz
+
+//// full access 
+
+
+db.createUser(
+   {
+       user: "root", 
+       pwd: "india", 
+       roles:["root"]
+   })
+
+-----------------------------------------------
+
+db.updateUser( "root",
+               {
+
+                 roles : ["root"]
+                }
+             )
+
+--------------------------------------------- // need to know about role .
+
+db.updateUser( "userName",
+               {
+
+                 roles : ["dbOwner"]
+                }
+             )
+-----------------------------------------------
+
+db.updateUser( "petboox",
+               {
+
+                 roles : [
+                           { role : "dbAdmin", db : "dbName"  },
+                           { role : "readWrite", db : "dbName"  }
+                         ]
+
+                }
+             )
+

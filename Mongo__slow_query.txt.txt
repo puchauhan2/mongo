@@ -1,0 +1,66 @@
+Firts Enable Profiling 
+
+Profiling Levels
+The following profiling levels are available:
+
+Level	Description
+0	The profiler is off and does not collect any data. This is the default profiler level.
+1	The profiler collects data for operations that take longer than the value of slowms.
+2	The profiler collects data for all operations.
+
+db.setProfilingLevel(1) // for slow log query .
+
+db.setProfilingLevel(1, { slowms: 10 })   // with theshold minimum milisecond
+
+db.getProfilingStatus() // to get status 
+db.getProfilingLevel()
+
+db.currentOp()   // lists the currently running queries
+
+---------------------------------------------------------------------------------------------------- start from here
+To Create profiling 
+
+refer  https://www.percona.com/blog/2017/03/01/using-percona-toolkit-pt-mongodb-query-digest/ 
+
+Login with root or full priviledge account ,select target Db and run below command
+
+# mongo -u root -p  password locahost:27017/DB_name
+
+1) > profiler_size = 100 * Math.pow(1024,2);  //  set data size ,1*Math.pow(1024,2) == 1M
+2) > db.runCommand( { create: "system.profile", capped: true, size: profiler_size } );  // allocate size 
+3) > db.setProfilingLevel(prof_level);	// set profile level 0=off ,1= slow query ,2 = all query
+  
+   Level	Description
+0	The profiler is off and does not collect any data. This is the default profiler level.
+1	The profiler collects data for operations that take longer than the value of slowms.
+2	The profiler collects data for all operations.
+
+  > db.setProfilingLevel(1, { slowms: 10 })  // slowms in milisecond ,default is 100 mili sac
+
+
+goto http://blog.andrewc.com/2014/02/percona-toolkit-on-centos/
+
+configure repository and install percona-toolkit
+
+To see result:
+
+ # pt-mongodb-summary -u root -p // global summary IO and hit
+ # pt-mongodb-query-digest -u root -p  10.50.0.92:27017/DB_name
+
+
+Status Command 
+
+db.getProfilingStatus()	// shows level and slowms
+db.getProfilingLevel()	// show level 
+db.currentOp()   	// current pending transactions 
+
+
+**After all turn off profiling after analysis , > db.setProfilingLevel(0);
+
+-------------------------------------------------------------------------------
+
+How to create DB
+> use petboox_dev;
+> s = { Name : "test" }
+> db.testData.insert( s );
+show collections

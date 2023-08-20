@@ -1,0 +1,31 @@
+
+
+use Ramesh
+
+for (var i = 0; i <= 1000; i++) { db.m1.insert( { x : i }) , db.m2.insert( { x : i } ) , db.m3.insert( { x : i } ), db.m4.insert( { x : i } ), db.m5.insert( { x : i } ), db.m6.insert( { x : i } )
+
+}
+
+
+{rand:Math.random()}
+
+--------------------------------------------
+var randomName = function() {
+  return (Math.random()+1).toString(36).substring(2);
+}
+
+
+use random 
+for (var i = 0; i <= 1000; i++) {  
+db.mat1.insert( {"name":randomName(), "age":Math.random(), "dob" : Math.random()}),
+db.mat2.insert( {"name":randomName(), "age":Math.random(), "dob" : Math.random()}),
+db.mat3.insert( {"name":randomName(), "age":Math.random(), "dob" : Math.random()})
+
+}
+
+-------------------------------------------------------
+use Mat
+
+for (var i = 0; i <= 1000; i++) { db.mat1.insert( {"name":"cat", "age":45, "dob" : new Date()}),db.mat2.insert( {"name":"duck", "age":45, "dob" : new Date()}),db.mat3.insert( {"name":"cow", "age":45, "dob" : new Date()}),db.mat4.insert( {"name":"Ox", "age":45, "dob" : new Date()}),db.mat5.insert( {"name":"Ox", "age":45, "dob" : new Date()}),db.mat6.insert( {"name":"Ox", "age":45, "dob" : new Date()})
+
+}
